@@ -1,8 +1,8 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { BlogsListCard, } from "./components/BlogsListCard";
+import { BlogsListCard } from "./components/BlogsListCard";
 import { BlogsList } from "./components/BlogsList";
-
+import OptionBar from "./components/OptionBar";
 const sampleBlogs = [
   {
     createdAt: "2022-06-30T04:03:07.069Z",
@@ -42,37 +42,46 @@ const sampleBlogs = [
 ];
 
 const App = (props) => {
-const [blog,setBlogs] = useState([])
-const urlEndpoint = process.env.REACT_APP_URL_ENDPOINT;
+  const [blog, setBlogs] = useState([]);
+  const [urlParmas, setUrlParams] = useState("");
 
-useEffect(()=>{
-const fetchBlogs = async () =>{
+  const urlEndpoint = process.env.REACT_APP_URL_ENDPOINT;
 
-  const results = await fetch(`${urlEndpoint}/blogs`)
-  const blogs = await results.json();
-setBlogs(blogs)
+  const generateUrlParmas = (data) => {
+    let urlParams = "?";
+    if (data) {
 
-}
+    
 
-fetchBlogs();
-},[])
+      urlParams = urlParams.concat(
+        `limit=${data.limit}&page=${data.page}&sortBy=${data.sort}&order=${
+          data.order ? data.order : "asc"
+        }`
+      );
+        setUrlParams(urlParams);
+        console.log(urlParams)
+    
+  };
+  }
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const results = await fetch(`${urlEndpoint}/blogs${urlParmas}`);
+      const blogs = await results.json();
+      setBlogs(blogs);
+    };
 
-
-
-
-
+    fetchBlogs();
+  }, [urlParmas]);
 
   return (
-		<div className="App-header">
-	<><BlogsList blog = {blog}/></>
+    <div className="App-header">
+      <OptionBar generateUrlParams={generateUrlParmas} />
 
-  	</div>
-	);
-}
+      <>
+        <BlogsList blog={blog} />
+      </>
+    </div>
+  );
+};
 
-
-
-
-
-
-export default App;
+export default App

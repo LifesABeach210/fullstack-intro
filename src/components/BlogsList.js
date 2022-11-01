@@ -8,13 +8,13 @@ export const BlogsList = (props) => {
     <div>
       BlogsList
       <div>
-        {blog.map((blogs) => {
+        {blog.map((blogs,i) => {
           return (
             <div>
               <h2>{blogs.title}</h2>
               <p>{blogs.author}</p>
               <p>{blogs.text}</p>
-              <BlogsListCard blog = {blogs} />
+              <BlogsListCard key={i} blog = {blogs} />
             
             </div>
         
